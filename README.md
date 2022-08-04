@@ -1,2 +1,3 @@
 # LinuxDeviceDrivers
-Some tests to learn about drivers :)
+
+Driver for a seven-segments display.
