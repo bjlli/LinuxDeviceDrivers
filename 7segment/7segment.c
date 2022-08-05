@@ -6,6 +6,10 @@
 #include <linux/kobject.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
+#include <linux/of_device.h>
+#include <linux/gpio/consumer.h>
+#include <linux/platform_device.h>
+
 
 /********Show/Store functions declaration********/
 static ssize_t show_value( struct class *class, struct class_attribute *attr, char *buf ); 
