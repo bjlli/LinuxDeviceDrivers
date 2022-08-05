@@ -89,6 +89,9 @@ static void segmentsDisplay_exit(void)
     /*Destroying the class in /sys/class*/
     class_unregister(device_class);
     class_destroy(device_class);
+    /*Destroying the files in /sys/class*/
+    kfree(attr_value);
+    kfree(attr_enableDP);
 
     printk(KERN_ALERT "7 segment display module exit!");
 
