@@ -23,7 +23,8 @@ static int gpio_exit_remove(struct platform_device *pdev);
 static struct class *device_class = NULL;
 struct class_attribute *attr_value = NULL;
 struct class_attribute *attr_enableDP = NULL;
-struct gpio_desc segments[8];
+struct gpio_desc *a, *b, *c, *d;
+struct gpio_desc *e, *f, *g, *dp;
 volatile int value_display; 
 volatile int enable_dp;
 /***************Global Structs******************/
@@ -55,7 +56,120 @@ static ssize_t show_value( struct class *class, struct class_attribute *attr, ch
 
 static ssize_t store_value( struct class *class, struct class_attribute *attr, const char *buf, size_t count ){
     printk("Display value - WRITE!");
-    sscanf(buf,"%d",&value_display); 
+    sscanf(buf,"%d",&value_display);
+    switch(value_display){
+    	case 0:
+    		gpiod_set_value(a, 1);
+		gpiod_set_value(b, 1);
+		gpiod_set_value(c, 1);
+		gpiod_set_value(d, 1);
+	        gpiod_set_value(e, 1);
+		gpiod_set_value(f, 1);
+		gpiod_set_value(g, 0);
+		break; 
+
+    	case 1:
+    		gpiod_set_value(a, 0);
+		gpiod_set_value(b, 1);
+		gpiod_set_value(c, 1);
+		gpiod_set_value(d, 0);
+	        gpiod_set_value(e, 0);
+		gpiod_set_value(f, 0);
+		gpiod_set_value(g, 0);
+		break;
+
+	case 2:
+		gpiod_set_value(a, 1);
+		gpiod_set_value(b, 1);
+		gpiod_set_value(c, 0);
+		gpiod_set_value(d, 1);
+	        gpiod_set_value(e, 1);
+		gpiod_set_value(f, 0);
+		gpiod_set_value(g, 1);
+		break;
+
+	case 3:
+		gpiod_set_value(a, 1);
+		gpiod_set_value(b, 1);
+		gpiod_set_value(c, 1);
+		gpiod_set_value(d, 1);
+	        gpiod_set_value(e, 0);
+		gpiod_set_value(f, 0);
+		gpiod_set_value(g, 1);
+		break;
+
+	case 4:
+    		gpiod_set_value(a, 0);
+		gpiod_set_value(b, 1);
+		gpiod_set_value(c, 1);
+		gpiod_set_value(d, 0);
+	        gpiod_set_value(e, 0);
+		gpiod_set_value(f, 1);
+		gpiod_set_value(g, 1);
+		break;
+
+    	case 5:
+    		gpiod_set_value(a, 1);
+		gpiod_set_value(b, 0);
+		gpiod_set_value(c, 1);
+		gpiod_set_value(d, 1);
+	        gpiod_set_value(e, 0);
+		gpiod_set_value(f, 1);
+		gpiod_set_value(g, 1);
+		break;
+
+    	case 6:
+    		gpiod_set_value(a, 1);
+		gpiod_set_value(b, 0);
+		gpiod_set_value(c, 1);
+		gpiod_set_value(d, 1);
+	        gpiod_set_value(e, 1);
+		gpiod_set_value(f, 1);
+		gpiod_set_value(g, 1);
+		break; 
+
+    	case 7:
+    		gpiod_set_value(a, 1);
+		gpiod_set_value(b, 1);
+		gpiod_set_value(c, 1);
+		gpiod_set_value(d, 0);
+	        gpiod_set_value(e, 0);
+		gpiod_set_value(f, 0);
+		gpiod_set_value(g, 0);
+		break; 
+
+    	case 8:
+    		gpiod_set_value(a, 1);
+		gpiod_set_value(b, 1);
+		gpiod_set_value(c, 1);
+		gpiod_set_value(d, 1);
+	        gpiod_set_value(e, 1);
+		gpiod_set_value(f, 1);
+		gpiod_set_value(g, 1);
+		break; 
+	
+    	case 9:
+    		gpiod_set_value(a, 1);
+		gpiod_set_value(b, 1);
+		gpiod_set_value(c, 1);
+		gpiod_set_value(d, 0);
+	        gpiod_set_value(e, 0);
+		gpiod_set_value(f, 1);
+		gpiod_set_value(g, 1);
+		break;
+
+       default:	
+		printk("Not able to write this number!");
+		gpiod_set_value(a, 1);
+		gpiod_set_value(b, 0);
+		gpiod_set_value(c, 0);
+		gpiod_set_value(d, 1);
+	        gpiod_set_value(e, 1);
+		gpiod_set_value(f, 1);
+		gpiod_set_value(g, 1);
+
+		break;
+    } 
     return count;
 }
 
@@ -65,25 +179,29 @@ static ssize_t show_enableDP( struct class *class, struct class_attribute *attr,
 }
 
 static ssize_t store_enableDP( struct class *class, struct class_attribute *attr, const char *buf, size_t count ){
-    printk("Enable DP - WRITE!");
-    sscanf(buf,"%d",&enable_dp); 
+    
+    sscanf(buf, "%d", &enable_dp);
+    if(enable_dp<2){
+	printk("Enable DP - WRITE!");
+	gpiod_set_value(dp,enable_dp);
+    }else{
+    	printk("You shouldn't write a number higher than 1!");
+    } 
     return count;
 }
 
 /********Probe/Remove functions definition*********/
 
 static int gpio_init_probe(struct platform_device *pdev){
-    int ret;
-    struct device *dev = &pdev->dev;
     printk("GPIO PROBE!");
-    &segments[0] = devm_gpiod_get(&pdev->dev, "a", GPIOD_OUT_LOW);
-    &segments[1] = devm_gpiod_get(&pdev->dev, "b", GPIOD_OUT_LOW);
-    &segments[2] = devm_gpiod_get(&pdev->dev, "c", GPIOD_OUT_LOW);
-    &segments[3] = devm_gpiod_get(&pdev->dev, "d", GPIOD_OUT_LOW);
-    &segments[4] = devm_gpiod_get(&pdev->dev, "e", GPIOD_OUT_LOW);
-    &segments[5] = devm_gpiod_get(&pdev->dev, "f", GPIOD_OUT_LOW);
-    &segments[6] = devm_gpiod_get(&pdev->dev, "g", GPIOD_OUT_LOW);
-    &segments[7] = devm_gpiod_get(&pdev->dev, "dp", GPIOD_OUT_LOW);
+    a = devm_gpiod_get(&pdev->dev, "a", GPIOD_OUT_LOW);
+    b = devm_gpiod_get(&pdev->dev, "b", GPIOD_OUT_LOW);
+    c = devm_gpiod_get(&pdev->dev, "c", GPIOD_OUT_LOW);
+    d = devm_gpiod_get(&pdev->dev, "d", GPIOD_OUT_LOW);
+    e = devm_gpiod_get(&pdev->dev, "e", GPIOD_OUT_LOW);
+    f = devm_gpiod_get(&pdev->dev, "f", GPIOD_OUT_LOW);
+    g = devm_gpiod_get(&pdev->dev, "g", GPIOD_OUT_LOW);
+    dp = devm_gpiod_get(&pdev->dev, "dp", GPIOD_OUT_LOW);
     return 0;
 
 }
@@ -99,6 +217,13 @@ static int segmentsDisplay_init(void)
 {
     int ret;
     static struct lock_class_key key; 
+    printk(KERN_ALERT "7 segmente display module init!");
+
+    /*Creating a class in /sys/class*/    
+    device_class = (struct class *)kzalloc(sizeof(struct class),GFP_ATOMIC);       
+    if(!device_class){
+    	printk("Class allocation error!");
+    }
     printk(KERN_ALERT "7 segmente display module init!");
 
     /*Creating a class in /sys/class*/    
@@ -150,10 +275,7 @@ static void segmentsDisplay_exit(void)
     platform_driver_unregister(&display_driver);
 
     printk(KERN_ALERT "7 segment display module exit!");
-
-
 }
-
 
 MODULE_LICENSE("GPL");
 module_init(segmentsDisplay_init);
