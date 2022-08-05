@@ -16,15 +16,34 @@ static ssize_t show_value( struct class *class, struct class_attribute *attr, ch
 static ssize_t show_enableDP( struct class *class, struct class_attribute *attr, char *buf );
 static ssize_t store_value( struct class *class, struct class_attribute *attr, const char *buf, size_t count );
 static ssize_t store_enableDP( struct class *class, struct class_attribute *attr, const char *buf, size_t count);
+/******Device Tree Functions declaration********/
+static int gpio_init_probe(struct platform_device *pdev);
+static int gpio_exit_remove(struct platform_device *pdev);
 /***************Global variables*****************/
 static struct class *device_class = NULL;
 struct class_attribute *attr_value = NULL;
 struct class_attribute *attr_enableDP = NULL;
+struct gpio_desc segments[8];
 volatile int value_display; 
 volatile int enable_dp;
 /***************Global Structs******************/
 static const struct file_operations fops = {
 	.owner = THIS_MODULE,
+};
+
+static struct of_device_id driver_ids[] = {
+    {.compatible = "emc-logic,7segment"},
+    {/* end node */}
+};
+
+static struct platform_driver display_driver = {
+    .probe = gpio_init_probe,
+    .remove = gpio_exit_remove,
+    .driver = {
+        .name = "display_driver",
+                .owner = THIS_MODULE,
+                .of_match_table = driver_ids,
+    }
 };
 
 /********Show/Store functions definition*********/
@@ -49,6 +68,30 @@ static ssize_t store_enableDP( struct class *class, struct class_attribute *attr
     printk("Enable DP - WRITE!");
     sscanf(buf,"%d",&enable_dp); 
     return count;
+}
+
+/********Probe/Remove functions definition*********/
+
+static int gpio_init_probe(struct platform_device *pdev){
+    int ret;
+    struct device *dev = &pdev->dev;
+    printk("GPIO PROBE!");
+    &segments[0] = devm_gpiod_get(&pdev->dev, "a", GPIOD_OUT_LOW);
+    &segments[1] = devm_gpiod_get(&pdev->dev, "b", GPIOD_OUT_LOW);
+    &segments[2] = devm_gpiod_get(&pdev->dev, "c", GPIOD_OUT_LOW);
+    &segments[3] = devm_gpiod_get(&pdev->dev, "d", GPIOD_OUT_LOW);
+    &segments[4] = devm_gpiod_get(&pdev->dev, "e", GPIOD_OUT_LOW);
+    &segments[5] = devm_gpiod_get(&pdev->dev, "f", GPIOD_OUT_LOW);
+    &segments[6] = devm_gpiod_get(&pdev->dev, "g", GPIOD_OUT_LOW);
+    &segments[7] = devm_gpiod_get(&pdev->dev, "dp", GPIOD_OUT_LOW);
+    return 0;
+
+}
+
+static int gpio_exit_remove(struct platform_device *pdev){
+    printk("GPIO REMOVE!");
+    return 0;
+
 }
 
 /***************Module Functions****************/
@@ -84,6 +127,13 @@ static int segmentsDisplay_init(void)
     attr_enableDP->attr.mode = 0664 ;
     ret = class_create_file(device_class, attr_enableDP);
 
+    /*Loading the GPIO's via device tree*/
+    if(platform_driver_register(&display_driver)) {
+	printk("Error! Could not load the 7 segments display driver\n");
+	return -1;
+	}
+
+
     return 0;
 
 }
@@ -96,6 +146,8 @@ static void segmentsDisplay_exit(void)
     /*Destroying the files in /sys/class*/
     kfree(attr_value);
     kfree(attr_enableDP);
+    /*Unregister the device tree gpio driver*/
+    platform_driver_unregister(&display_driver);
 
     printk(KERN_ALERT "7 segment display module exit!");
 
