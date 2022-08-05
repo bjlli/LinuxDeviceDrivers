@@ -26,7 +26,8 @@ static int segmentsDisplay_init(void)
     printk(KERN_ALERT "7 segmente display module init!");
 
     /*Creating a class in /sys/class*/    
-    device_class = (struct class *)kzalloc(sizeof(struct class),GFP_ATOMIC);;       if(!device_class){
+    device_class = (struct class *)kzalloc(sizeof(struct class),GFP_ATOMIC);       
+    if(!device_class){
     	printk("Class allocation error!");
     }
     printk("Teste");
