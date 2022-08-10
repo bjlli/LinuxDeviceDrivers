@@ -4,7 +4,7 @@ Device tree based driver for a common cathode seven-segments display. To run thi
 
 # Raspberry Pi pinout
 
-The relation beetween the Raspberry Pi GPIO pins and the display segments is:
+The relation between the Raspberry Pi GPIO pins and the display segments is:
 
       SEGMENT | GPIO
          a    |   2
