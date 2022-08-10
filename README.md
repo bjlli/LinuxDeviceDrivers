@@ -18,7 +18,7 @@ The relation beetween the Raspberry Pi GPIO pins and the display segments is:
          
 # Driver files
 
-The driver files are located at /sys/class/7segment repository. If you write a number from 0 to 9 in the value file the display will show this number, for numbers higher than 9 the display will show the character "E" from error. If you write 0 and 1 in the enable_dp file, the dot will respectively light off and light on. Writing numbers highter than 1 in the enable_dp file shouldn't change anything at the display.
+The driver files are located at /sys/class/7segment repository. If you write a number from 0 to 9 in the value file the display will show this number, for numbers higher than 9 the display will show the character "E" from error. If you write 0 and 1 in the enableDP file, the dot will respectively light off and light on. Writing numbers highter than 1 in the enableDP file shouldn't change anything at the display.
 
 # To enable/disable the module
 
