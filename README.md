@@ -1,3 +1,4 @@
 # LinuxDeviceDrivers
 
-Driver for a seven-segments display.
+Driver for a common cathode seven-segments display.
+
