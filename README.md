@@ -23,9 +23,13 @@ The driver files are located at /sys/class/7segment repository. If you write a n
 # To enable/disable the module
 
 To enable the module in rasbian you should:
+
 make
+
 sudo dtoverlay overlay.dtbo
+
 sudo insmod 7segment.ko
 
 To disable the module in raspbian you should:
+
 sudo rmmod 7segment
