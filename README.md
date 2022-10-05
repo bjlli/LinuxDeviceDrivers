@@ -6,15 +6,15 @@ Device tree based driver for a common cathode seven-segments display. To run thi
 
 The relation between the Raspberry Pi GPIO pins and the display segments is:
 
-      SEGMENT | GPIO
-         a    |   2
-         b    |   3
-         c    |   4
-         d    |   5
-         e    |   6
-         f    |   7
-         g    |   9
-         dp   |   10
+      SEGMENT | HS-3161 PIN | GPIO
+         a    |     10      |  2
+         b    |     9       |  3
+         c    |     8       |  4
+         d    |     5       |  5
+         e    |     4       |  6
+         f    |     2       |  7
+         g    |     3       |  9
+         dp   |     7       |  10
          
 # Driver files
 
