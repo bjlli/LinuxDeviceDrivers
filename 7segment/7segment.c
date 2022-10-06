@@ -4,7 +4,6 @@
 #include <linux/kernel.h>
 #include <linux/sysfs.h>
 #include <linux/kobject.h>
-#include <linux/fs.h>
 #include <linux/slab.h>
 #include <linux/of_device.h>
 #include <linux/gpio/consumer.h>
@@ -27,10 +26,8 @@ struct gpio_desc *a, *b, *c, *d;
 struct gpio_desc *e, *f, *g, *dp;
 volatile int value_display; 
 volatile int enable_dp;
+int type;
 /***************Global Structs******************/
-static const struct file_operations fops = {
-	.owner = THIS_MODULE,
-};
 
 static struct of_device_id driver_ids[] = {
     {.compatible = "emc-logic,7segment"},
@@ -193,6 +190,7 @@ static ssize_t store_enableDP( struct class *class, struct class_attribute *attr
 /********Probe/Remove functions definition*********/
 
 static int gpio_init_probe(struct platform_device *pdev){
+    int ret;
     printk("GPIO PROBE!");
     a = devm_gpiod_get(&pdev->dev, "a", GPIOD_OUT_LOW);
     b = devm_gpiod_get(&pdev->dev, "b", GPIOD_OUT_LOW);
@@ -202,6 +200,7 @@ static int gpio_init_probe(struct platform_device *pdev){
     f = devm_gpiod_get(&pdev->dev, "f", GPIOD_OUT_LOW);
     g = devm_gpiod_get(&pdev->dev, "g", GPIOD_OUT_LOW);
     dp = devm_gpiod_get(&pdev->dev, "dp", GPIOD_OUT_LOW);
+    ret = device_property_read_u32(&pdev->dev,"type",&type);
     return 0;
 
 }
@@ -218,14 +217,8 @@ static int segmentsDisplay_init(void)
     int ret;
     static struct lock_class_key key; 
     printk(KERN_ALERT "7 segmente display module init!");
-
-    /*Creating a class in /sys/class*/    
-    device_class = (struct class *)kzalloc(sizeof(struct class),GFP_ATOMIC);       
-    if(!device_class){
-    	printk("Class allocation error!");
-    }
-    printk(KERN_ALERT "7 segmente display module init!");
-
+  
+   
     /*Creating a class in /sys/class*/    
     device_class = (struct class *)kzalloc(sizeof(struct class),GFP_ATOMIC);       
     if(!device_class){
