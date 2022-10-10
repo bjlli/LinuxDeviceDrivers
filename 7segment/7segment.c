@@ -1,9 +1,6 @@
-#include <linux/init.h>
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
-#include <linux/sysfs.h>
-#include <linux/kobject.h>
 #include <linux/slab.h>
 #include <linux/of_device.h>
 #include <linux/gpio/consumer.h>
@@ -234,7 +231,7 @@ static int segmentsDisplay_init(void)
     attr_value->show = show_value;
     attr_value->store = store_value;
     attr_value->attr.name = "value";
-    attr_value->attr.mode = 0664 ;
+    attr_value->attr.mode = 0777 ;
     ret = class_create_file(device_class, attr_value);
 
     /*Creating the file /sys/class/7segment/enableDP*/
@@ -242,7 +239,7 @@ static int segmentsDisplay_init(void)
     attr_enableDP->show = show_enableDP;
     attr_enableDP->store = store_enableDP;
     attr_enableDP->attr.name = "enableDP";
-    attr_enableDP->attr.mode = 0664 ;
+    attr_enableDP->attr.mode = 0777 ;
     ret = class_create_file(device_class, attr_enableDP);
 
     /*Loading the GPIO's via device tree*/
