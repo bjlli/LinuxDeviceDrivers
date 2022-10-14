@@ -41,6 +41,7 @@ static struct platform_driver display_driver = {
     }
 };
 
+
 /********Show/Store functions definition*********/
 
 static ssize_t show_value( struct class *class, struct class_attribute *attr, char *buf ){
@@ -269,6 +270,6 @@ static void segmentsDisplay_exit(void)
     printk(KERN_ALERT "7 segment display module exit!");
 }
 
-//MODULE_LICENSE("GPL");
+
 module_init(segmentsDisplay_init);
 module_exit(segmentsDisplay_exit);
