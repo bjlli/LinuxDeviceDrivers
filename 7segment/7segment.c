@@ -209,6 +209,9 @@ static int gpio_exit_remove(struct platform_device *pdev){
 }
 
 /***************Module Functions****************/
+
+MODULE_LICENSE("GPL");
+
 static int segmentsDisplay_init(void)
 {
     int ret;
@@ -221,7 +224,6 @@ static int segmentsDisplay_init(void)
     if(!device_class){
     	printk("Class allocation error!");
     }
-    printk("Teste");
     device_class->name = "7segment";
     device_class->owner = THIS_MODULE;
     ret = __class_register(device_class,&key);
@@ -267,6 +269,6 @@ static void segmentsDisplay_exit(void)
     printk(KERN_ALERT "7 segment display module exit!");
 }
 
-MODULE_LICENSE("GPL");
+//MODULE_LICENSE("GPL");
 module_init(segmentsDisplay_init);
 module_exit(segmentsDisplay_exit);
